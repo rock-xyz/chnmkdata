@@ -1,17 +1,32 @@
 import os
-import datetime
+import time,datetime
 import re
 #
 
-def init(): #初始化股票列表
-	#define the duration and runtime of the script
-	pass
+def init(filename,filepath): #初始化股票列表
+	#check if the file is updated, if not wait for 5s;
 
-def filename():
-	if filename == None:
-		filename = "mktdt00.txt"
-	else:
-		filename = "mktdt"+seq+".txt"
+	#file is not existing
+
+	i=0
+	for i in range(1,100):
+		if os.path.exists(filepath):
+			stat_info=os.stat(filepath)
+			modifyTime=time.ctime(stat_info.st_mtime)
+			if h.get(filename) == None:
+				h[filename]=modifyTime
+				readfiles(filepath)
+			else:
+				if h.get(filename) == modifyTime:
+					time.sleep(5)
+					print(filename + ":" + str(modifyTime) + " -- Same")
+				else:
+					h[filename] = modifyTime
+					print(filename + ":" + str(modifyTime) + " -- Diff")
+					readfiles(filepath)
+		else:
+			print("File is not existing")
+			time.sleep(10)
 
 def loopfiles(sourceDir):
 	for files in os.listdir(sourceDir):
@@ -80,14 +95,18 @@ def currenttime():
 if __name__ =="__main__":
 	e={} #存储highprice
 	f={} #存储lowprice
-	g={} #latest price
+	g={} #number of price change
+	h={} #time of file modified
+
 	g["chgnum"] = 0
 	currenttime()
 	sourceDir = "E:\\rock\\workspace\\mk"
 	#filename()
 	filename = "mktdt00.txt"
-	filepath = sourceDir+"\\"+filename
-	#print(filepath)
-	loopfiles(sourceDir)
+	filepath = os.path.join(sourceDir,filename)
+	
+	init(filename,filepath)
+
+	#loopfiles(sourceDir)
 
 	#readfiles(filepath)
